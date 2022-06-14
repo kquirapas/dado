@@ -10,7 +10,7 @@ endif
 let s:shortmess_save = &shortmess
 set shortmess=aoO
 badd +1 src/main.rs
-badd +1 Cargo.toml
+badd +9 Cargo.toml
 argglobal
 %argdel
 edit src/main.rs
