@@ -25,6 +25,8 @@ enum Commands {
 }
 
 // TODO: Resolve paths properly
+// TODO: Properly eliminate the out of nowhere \n in .dado when list goes to 0
+// TODO: Fix case when removing to 0 tasks
 const SAVEFILE: &str = "/home/kirby/.dado";
 
 fn main() {
