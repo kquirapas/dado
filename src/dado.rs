@@ -146,6 +146,66 @@ pub fn remove<'a>(filepath: &'a str, task_num: &'a usize) -> Result<(), &'a str>
     }
 }
 
+pub fn toggle<'a>(filepath: &'a str, task_num: &'a usize) -> Result<(), &'a str> {
+    // First check if file exists
+    if !Path::exists(Path::new(filepath)) {
+        return Err("File does not exist");
+    }
+
+    let mut file = match File::options()
+        .read(true)
+        .open(filepath) {
+            
+        Err(_) => {
+            File::options()
+                .read(true)
+                .create(true)
+                .open(filepath)
+                .expect("Failed to create file")
+        },
+        Ok(file) => file
+    };
+
+    let mut contents = String::new();
+
+    file.read_to_string(&mut contents)
+        .expect("Failed to read to string");
+
+    let mut lines: Vec<&str> = contents.trim().trim_matches('\n').split("\n").collect();
+
+    if lines.len() > *task_num {
+        let row = lines[*task_num].split(",").collect::<Vec<&str>>();
+        let mut task = String::from(row[0]);
+        let status = row[1];
+
+        match status {
+            "done" => task.push_str(",pending"),
+            "pending" => task.push_str(",done"),
+            _ => return Err("Unidentified status name in toggle()")
+        };
+
+        lines[*task_num] = task.as_str();
+
+        let mut file = File::options()
+            .read(true)
+            .write(true)
+            .truncate(true)
+            .open(filepath)
+            .expect("Failed to create file");
+
+        let mut lines = lines.join("\n");
+        lines.push_str("\n");
+        file.write(lines.as_bytes())
+            .expect("Failed to write after toggle");
+
+        display_tasks(filepath).expect("Expect: Failed to display tasks");
+
+        Ok(())
+    } else {
+        Err("Task number out of bounds")
+    }
+}
+
 pub fn list(filepath: &str) -> Result<(), io::Error> {
     display_tasks(filepath).expect("Expect: Failed to display tasks");
 

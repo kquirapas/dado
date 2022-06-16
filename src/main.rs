@@ -21,6 +21,10 @@ enum Commands {
         #[clap(value_parser)]
         task_num: usize
     },
+    Toggle {
+        #[clap(value_parser)]
+        task_num: usize
+    },
     List
 }
 
@@ -47,6 +51,14 @@ fn main() {
                     panic!("Failed to remove Task#{} from {}: {}", task_num, SAVEFILE, why);
                 },
                 Ok(_) => println!("Successfully removed")
+            };
+        },
+        Commands::Toggle { task_num } => { 
+            match dado::toggle(SAVEFILE, &task_num) {
+                Err(why) => {
+                    panic!("Failed to toggle Task#{} from {}: {}", task_num, SAVEFILE, why);
+                },
+                Ok(_) => println!("Successfully toggled")
             };
         },
         Commands::List => { 
