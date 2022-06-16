@@ -1,5 +1,7 @@
 # dado: Daily Todo
 
+![dado Preview](/assets/dado-preview.png)
+
 ### Description
 
 A command line tool to manage your daily tasks.
